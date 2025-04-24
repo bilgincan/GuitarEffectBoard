@@ -1,5 +1,6 @@
 import threading
 from threading import Thread
+from typing import override
 
 from models.effects.EffectBase import Effect
 from multiprocessing import Process, Queue
@@ -16,6 +17,7 @@ class Delay(Effect):
         self.delay_rate = delay_rate
         self.frequency = frequency
 
+    @override
     def effect_channel(self) -> None:
         q = Queue()
         self.sampler = threading.Thread(target=self.create_samples, args=(q, self.delay_rate))
@@ -50,6 +52,7 @@ class Delay(Effect):
                     i = 0
                 i = i + 1
 
+    @override
     def activate_effect(self) -> None:
         self.by_pass_channel = Process(target=super().bypass_channel)
         self.effect_channel = Process(target=self.effect_channel)
@@ -61,6 +64,7 @@ class Delay(Effect):
         self.by_pass_channel.join()
         self.effect_channel.join()
 
+    @override
     def deactivate_effect(self) -> None:
         self.is_active = False
         self.effect_channel.terminate()
