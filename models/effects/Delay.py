@@ -1,9 +1,8 @@
 import threading
 from threading import Thread
-from typing import override
 
-from models.audio_in.AudioIn import AudioIn
-from models.audio_out.AudioOut import AudioOut
+from models.audio_device.audio_in import AudioIn
+from models.audio_device.audio_out import AudioOut
 from models.effects.EffectBase import Effect
 from multiprocessing import Process, Queue
 
@@ -22,7 +21,6 @@ class Delay(Effect):
         self.delay_rate = delay_rate
         self.frequency = frequency
 
-    @override
     def effect_channel(self) -> None:
         q = Queue()
         self.sampler = threading.Thread(target=self.create_samples, args=(q, self.delay_rate))
@@ -45,18 +43,19 @@ class Delay(Effect):
         super().audio_out.play_audio(sound)
 
     def create_samples(self, q: Queue, sample_limit=15) -> None:
-        with super().audio_in.recorder(samplerate=super().rate) as audioSrc:
-            samples = []
-            i = 0
-            while True:
-                samples.append(audioSrc.record(numframes=super().chunk))
-                q.put(samples)
-                if i == sample_limit:
-                    samples = []
-                    i = 0
-                i = i + 1
+        samples = []
+        i = 0
 
-    @override
+        while True:
+            sample_sound = super().audio_in.get_audio()
+            samples.append(sample_sound)
+            q.put(samples)
+
+            if i == sample_limit:
+                samples = []
+                i = 0
+            i = i + 1
+
     def activate_effect(self) -> None:
         self.by_pass_channel = Process(target=super().bypass_channel)
         self.effect_channel = Process(target=self.effect_channel)
@@ -68,7 +67,6 @@ class Delay(Effect):
         self.by_pass_channel.join()
         self.effect_channel.join()
 
-    @override
     def deactivate_effect(self) -> None:
         self.is_active = False
         self.effect_channel.terminate()
