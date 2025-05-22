@@ -12,21 +12,21 @@ from models.sound.Sound import Sound
 class Delay(Effect):
     delay_rate: int
     frequency: int
-    by_pass_channel: Process
-    effect_channel: Process
+    effect_channel_thread: Thread
     sampler: Thread
 
     def __init__(self, audio_in: AudioIn, audio_out: AudioOut, delay_rate: int=15, frequency: int=25):
         super().__init__(audio_in=audio_in, audio_out=audio_out)
         self.delay_rate = delay_rate
         self.frequency = frequency
+        self.effect_channel_thread = Thread(target=self.effect_channel)
 
     def effect_channel(self) -> None:
         q = Queue()
         self.sampler = threading.Thread(target=self.create_samples, args=(q, self.delay_rate))
         self.sampler.start()
 
-        while True:
+        while self.is_active:
             threads = []
 
             for _ in range(self.frequency):
@@ -37,18 +37,22 @@ class Delay(Effect):
             for t in threads:
                 t.join()
 
+        self.sampler.join()
+
     def delay(self, q: Queue) -> None:
         samples = q.get()
-        sound = Sound(samples)
-        super().audio_out.play_audio(sound)
+
+        for sample in samples:
+            sound = Sound(sample)
+            self.audio_out.play_audio(sound)
 
     def create_samples(self, q: Queue, sample_limit=15) -> None:
         samples = []
         i = 0
 
-        while True:
-            sample_sound = super().audio_in.get_audio()
-            samples.append(sample_sound)
+        while self.is_active:
+            sample_sound: Sound = self.audio_in.get_audio()
+            samples.append(sample_sound.sample)
             q.put(samples)
 
             if i == sample_limit:
@@ -57,16 +61,12 @@ class Delay(Effect):
             i = i + 1
 
     def activate_effect(self) -> None:
-        self.by_pass_channel = Process(target=super().bypass_channel)
-        self.effect_channel = Process(target=self.effect_channel)
-
-        self.by_pass_channel.start()
-        self.effect_channel.start()
         self.is_active = True
 
-        self.by_pass_channel.join()
-        self.effect_channel.join()
+        if not self.effect_channel_thread.is_alive():
+            self.effect_channel_thread.start()
+
+        self.effect_channel_thread.join()
 
     def deactivate_effect(self) -> None:
         self.is_active = False
-        self.effect_channel.terminate()

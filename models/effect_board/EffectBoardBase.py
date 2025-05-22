@@ -1,4 +1,5 @@
 from abc import ABC
+from threading import Thread
 
 from exception.NoPedalFoundException import NoPedalFound
 from exception.NoPositionFoundException import NoPositionFound
@@ -8,10 +9,12 @@ from models.effects.EffectBase import Effect
 class EffectBoard(ABC):
     board_size: int # this size indicates how many effect pedals the board can carry
     effects: list
+    effect_channel_threads: list[Thread]
 
     def __init__(self, board_size: int) -> None:
         self.board_size = board_size
         self.effects = [None] * board_size
+        self.effect_channel_threads = [None] * board_size
 
     def add_effect(self, position: int, effect: Effect):
         if position >= self.board_size:
@@ -39,4 +42,20 @@ class EffectBoard(ABC):
             raise NoPedalFound(position)
 
         pedal: Effect = self.effects[position]
-        pedal.activate_effect()
+
+        pedal_thread = Thread(target=pedal.activate_effect)
+        pedal_thread.start()
+        self.effect_channel_threads.insert(position, pedal_thread)
+
+    def deactivate_pedal(self, position: int) -> None:
+        if position >= self.board_size:
+            raise OutOfBoundException(position)
+
+        if self.effect_channel_threads[position] is None:
+            raise NoPedalFound(position)
+
+        pedal: Effect = self.effects[position]
+        pedal_thread: Thread = self.effect_channel_threads[position]
+
+        pedal.deactivate_effect()
+        pedal_thread.join()

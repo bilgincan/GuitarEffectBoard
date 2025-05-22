@@ -15,12 +15,10 @@ class Microphone(AudioIn):
         self.device = None
 
     def get_audio(self) -> Sound:
-        if self.device is None:
-            self.activate_device()
-
-        data = self.device.record(numframes=self.chunk)
-        sound = Sound(data)
-        return sound
+        with self.microphone.recorder(samplerate=self.rate) as mic:
+            data = mic.record(numframes=self.chunk)
+            sound = Sound(data)
+            return sound
 
     def deactivate_device(self):
         self.device.flush()
@@ -28,4 +26,3 @@ class Microphone(AudioIn):
     def activate_device(self):
         with self.microphone.recorder(samplerate=self.rate) as mic:
             self.device = mic
-

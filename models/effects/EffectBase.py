@@ -17,11 +17,6 @@ class Effect(ABC):
         self.audio_out = audio_out
         self.audio_in = audio_in
 
-    def bypass_channel(self) -> None:
-        while True:
-            data: Sound = self.audio_in.get_audio()
-            self.audio_out.play_audio(data)
-
     @abstractmethod
     def effect_channel(self) -> None:
         pass
