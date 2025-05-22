@@ -1,5 +1,6 @@
 from abc import ABC
 
+from exception.NoPedalFoundException import NoPedalFound
 from exception.NoPositionFoundException import NoPositionFound
 from exception.OutOfBound import OutOfBoundException
 from models.effects.EffectBase import Effect
@@ -29,3 +30,13 @@ class EffectBoard(ABC):
 
     def clear_board(self):
         self.effects = [None] * self.board_size
+
+    def activate_pedal(self, position: int) -> None:
+        if position >= self.board_size:
+            raise OutOfBoundException(position)
+
+        if self.effects[position] is None:
+            raise NoPedalFound(position)
+
+        pedal: Effect = self.effects[position]
+        pedal.activate_effect()

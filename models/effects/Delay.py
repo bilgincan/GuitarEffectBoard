@@ -2,8 +2,13 @@ import threading
 from threading import Thread
 from typing import override
 
+from models.audio_in.AudioIn import AudioIn
+from models.audio_out.AudioOut import AudioOut
 from models.effects.EffectBase import Effect
 from multiprocessing import Process, Queue
+
+from models.sound.Sound import Sound
+
 
 class Delay(Effect):
     delay_rate: int
@@ -12,8 +17,8 @@ class Delay(Effect):
     effect_channel: Process
     sampler: Thread
 
-    def __init__(self, delay_rate: int=15, frequency: int=25):
-        super().__init__()
+    def __init__(self, audio_in: AudioIn, audio_out: AudioOut, delay_rate: int=15, frequency: int=25):
+        super().__init__(audio_in=audio_in, audio_out=audio_out)
         self.delay_rate = delay_rate
         self.frequency = frequency
 
@@ -36,9 +41,8 @@ class Delay(Effect):
 
     def delay(self, q: Queue) -> None:
         samples = q.get()
-        with super().audio_out.player(samplerate=super().rate) as audio_output:
-            for s in samples:
-                audio_output.play(s)
+        sound = Sound(samples)
+        super().audio_out.play_audio(sound)
 
     def create_samples(self, q: Queue, sample_limit=15) -> None:
         with super().audio_in.recorder(samplerate=super().rate) as audioSrc:
