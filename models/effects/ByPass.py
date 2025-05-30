@@ -16,24 +16,9 @@ class ByPass(Effect):
         self.effect_channel_thread = Thread(target=self.effect_channel)
 
     def effect_channel(self) -> None:
-        q = Queue()
-        sampler = threading.Thread(target=self.listen_in_coming, args=(q,))
-        sampler.start()
-
         while self.is_active:
-            samples = q.get()
-
-            for sample in samples:
-                self.audio_out.play_audio(sample)
-
-        sampler.join()
-
-    def listen_in_coming(self, q: Queue) -> None:
-        while self.is_active:
-            samples = []
-            data: Sound = self.audio_in.get_audio()
-            samples.append(data)
-            q.put(samples)
+            data = self.audio_in.get_audio()
+            self.audio_out.play_audio(data)
 
 
     def activate_effect(self) -> None:
