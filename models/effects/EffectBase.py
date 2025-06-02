@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 from models.audio_device.audio_in import AudioIn
 from models.audio_device.audio_out import AudioOut
-from models.sound.Sound import Sound
 
 
 class Effect(ABC):

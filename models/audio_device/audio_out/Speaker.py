@@ -18,7 +18,8 @@ class Speaker(AudioOut):
              audio_output.play(sound.sample)
 
     def activate_device(self):
-        pass
+        with self.speaker.player(samplerate=self.rate) as audio_output:
+            return audio_output
 
     def deactivate_device(self):
         pass

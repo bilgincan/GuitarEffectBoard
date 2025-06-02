@@ -58,4 +58,5 @@ class EffectBoard(ABC):
         pedal_thread: Thread = self.effect_channel_threads[position]
 
         pedal.deactivate_effect()
-        pedal_thread.join()
+        if pedal_thread.is_alive():
+            pedal_thread.join(timeout=0.5)

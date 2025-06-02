@@ -16,9 +16,12 @@ class ByPass(Effect):
         self.effect_channel_thread = Thread(target=self.effect_channel)
 
     def effect_channel(self) -> None:
-        while self.is_active:
-            data = self.audio_in.get_audio()
-            self.audio_out.play_audio(data)
+        try:
+            while self.is_active:
+                data = self.audio_in.get_audio()
+                self.audio_out.play_audio(data)
+        finally:
+            print("ByPass ended")
 
 
     def activate_effect(self) -> None:
@@ -27,7 +30,6 @@ class ByPass(Effect):
         if not self.effect_channel_thread.is_alive():
             self.effect_channel_thread.start()
 
-        self.effect_channel_thread.join()
-
     def deactivate_effect(self) -> None:
-        pass
+        self.is_active = False
+        self.effect_channel_thread.join()
