@@ -1,0 +1,121 @@
+.pedal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+.pedal-body {
+    position: relative;
+    width: 180px;
+    height: 274px;
+    background-color: #2d7a2d;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.delay-knob {
+    position: absolute;
+    top: 33px;
+    left: 23px;
+}
+
+.freq-knob {
+    position: absolute;
+    top: 33px;
+    left: 110px;
+}
+
+.delay-label {
+    left: 23px;
+}
+
+.freq-label {
+    left: 120px;
+}
+
+.input-line,
+.output-line {
+    position: absolute;
+    top: 139px;
+    width: 1px;
+    height: 17px;
+    background-color: #d9d9d9;
+}
+
+.input-line {
+    left: 4px;
+}
+
+.output-line {
+    left: 176px;
+}
+
+.input-label,
+.output-label {
+    position: absolute;
+    top: 140px;
+    color: #fff;
+    font-family: "Irish Grover";
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.input-label {
+    left: 8px;
+}
+
+.output-label {
+    left: 141px;
+}
+
+.pedal-name {
+    position: absolute;
+    top: 172px;
+    left: 25px;
+    color: #000;
+    font-family: "Inspiration",sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.led-indicator {
+    position: absolute;
+    top: 205px;
+    left: 82px;
+    width: 11px;
+    height: 10px;
+    border-radius: 9999px;
+}
+
+.led-indicator-color-active {
+    background-color: #c90d0d;
+}
+
+.led-indicator-color-inactive {
+    background-color: #a5a5a5;
+}
+
+.foot-switch {
+    position: absolute;
+    top: 229px;
+    left: 77px;
+    width: 21px;
+    height: 19px;
+    background-color: #e3e3e3;
+    border-radius: 9999px;
+}
+
+@font-face {
+    font-family: "Irish Grover";
+    src: url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+}
+
+@font-face {
+    font-family: "Inspiration";
+    src: url("https://fonts.googleapis.com/css2?family=Inspiration&display=swap");
+}
