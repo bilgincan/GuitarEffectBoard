@@ -1,5 +1,3 @@
-from multiprocessing.spawn import freeze_support
-
 from models.audio_device.audio_in.Microphone import Microphone
 from models.audio_device.audio_out.Speaker import Speaker
 from models.effect_board.EffectBoardBase import EffectBoard

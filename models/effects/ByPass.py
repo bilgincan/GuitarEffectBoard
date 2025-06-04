@@ -11,8 +11,8 @@ from models.sound.Sound import Sound
 class ByPass(Effect):
     effect_channel_thread: Thread
 
-    def __init__(self, audio_in: AudioIn, audio_out: AudioOut) -> None:
-        super().__init__(audio_in=audio_in, audio_out=audio_out)
+    def __init__(self, audio_in: AudioIn, audio_out: AudioOut, volume: int, is_active: bool) -> None:
+        super().__init__(audio_in=audio_in, audio_out=audio_out, volume=volume, is_active=is_active)
         self.effect_channel_thread = Thread(target=self.effect_channel)
 
     def effect_channel(self) -> None:

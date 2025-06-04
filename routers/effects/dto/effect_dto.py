@@ -22,6 +22,8 @@ class EffectDto(BaseModel):
     def reverse_map(effect: Effect):
         if isinstance(effect, Delay):
             return DelayDto.reverse_map(effect=effect)
+        elif isinstance(effect, ByPass):
+            return ByPassDto.reverse_map(effect=effect)
         else:
             return NonEffectDto.reverse_map(effect=effect)
 
@@ -44,3 +46,12 @@ class DelayDto(EffectDto):
     @staticmethod
     def reverse_map(effect: Delay):
         return DelayDto(volume=effect.volume, is_active=effect.is_active, frequency=effect.frequency, delay_rate=effect.delay_rate, effect_type=EffectType.DELAY)
+
+class ByPassDto(EffectDto):
+
+    def map(self, audio_in: AudioIn, audio_out: AudioOut):
+        return ByPass(audio_in=audio_in, audio_out=audio_out, volume=self.volume, is_active=self.is_active)
+
+    @staticmethod
+    def reverse_map(effect: Effect):
+        return ByPassDto(volume=effect.volume, is_active=effect.is_active, effect_type=EffectType.BYPASS)

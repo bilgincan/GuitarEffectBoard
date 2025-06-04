@@ -8,7 +8,7 @@ from routers.dto_mother_class import ResponseDto, ResponseStatus
 from routers.effect_board.dto.pedal_board_dto import PedalBoardInputDto, PedalBoardOutputDto, \
     EffectInBoardDto
 from player import ConcretePedalBoard
-from routers.effects.dto.effect_dto import EffectDto, DelayDto
+from routers.effects.dto.effect_dto import EffectDto, DelayDto, ByPassDto
 from routers.effects.dto.effect_type_enum import EffectType
 
 router = APIRouter(
@@ -90,6 +90,8 @@ async def delete_effect_board(id: str) -> ResponseDto:  # change return type to 
 def transform_dto_into_concrete_dto(effect_dto: EffectDto) -> EffectDto:
     if effect_dto.effect_type == EffectType.DELAY:
         return DelayDto(volume=effect_dto.volume, is_active=effect_dto.is_active, effect_type=effect_dto.effect_type, delay_rate=effect_dto.delay_rate, frequency=effect_dto.frequency)
+    elif effect_dto.effect_type == EffectType.BYPASS:
+        return ByPassDto(volume=effect_dto.volume, is_active=effect_dto.is_active, effect_type=effect_dto.effect_type)
 
 def prepare_response(pedal_board: EffectBoard, success: bool= True, message: str="") -> ResponseDto:
     effects_dto = []
