@@ -9,7 +9,7 @@ class PedalBoardInputDto(BaseModel):
 class PedalBoardOutputDto(BaseModel):
     board_id: str
     board_size: int
-    effects: list
+    effects: list[EffectDto]
 
 class EffectInBoardDto(BaseModel):
     position: int

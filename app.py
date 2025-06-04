@@ -1,11 +1,9 @@
 import uvicorn
 from fastapi import FastAPI
 
-from routers.effects import delay_api
 from routers.effect_board import pedal_board_api
 
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight": True})
-app.include_router(delay_api.router)
 app.include_router(pedal_board_api.router)
 
 @app.get("/")

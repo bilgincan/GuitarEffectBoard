@@ -7,8 +7,6 @@ from models.audio_device.audio_out import AudioOut
 class Effect(ABC):
     volume: int
     is_active: bool
-    audio_in:  AudioIn
-    audio_out: AudioOut
 
     def __init__(self, audio_in: AudioIn, audio_out: AudioOut, volume: int=50, is_active: bool=True):
         self.volume = volume

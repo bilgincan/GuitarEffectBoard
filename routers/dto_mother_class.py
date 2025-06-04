@@ -2,11 +2,11 @@ from pydantic import BaseModel
 from enum import Enum
 
 class ResponseStatus(Enum):
-    FAIL = 0
-    SUCCESS = 1
+    FAIL = "fail"
+    SUCCESS = "success"
 
 
 class ResponseDto(BaseModel):
     status: ResponseStatus
     message: str
-    data: BaseModel
+    data: dict

@@ -7,8 +7,9 @@ from exception.OutOfBound import OutOfBoundException
 from models.effects.EffectBase import Effect
 
 class EffectBoard(ABC):
+    id: str
     board_size: int # this size indicates how many effect pedals the board can carry
-    effects: list
+    effects: list[Effect]
     effect_channel_threads: list[Thread]
 
     def __init__(self, board_size: int) -> None:
@@ -21,7 +22,7 @@ class EffectBoard(ABC):
             raise OutOfBoundException(position)
 
         if self.effects[position] is None:
-            self.effects.insert(position, effect)
+            self.effects[position] = effect
         else:
             raise NoPositionFound(position)
 
@@ -29,7 +30,18 @@ class EffectBoard(ABC):
         if position >= self.board_size:
             raise OutOfBoundException(position)
 
-        self.effects.insert(position, None)
+        self.effects[position] = None
+
+    def get_effect(self, position: int) -> Effect:
+        if position >= self.board_size:
+            raise OutOfBoundException(position)
+
+        effect: Effect = self.effects[position]
+
+        if effect is None:
+            raise NoPedalFound(position)
+
+        return effect
 
     def clear_board(self):
         self.effects = [None] * self.board_size
