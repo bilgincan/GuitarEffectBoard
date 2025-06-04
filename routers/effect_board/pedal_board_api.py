@@ -70,6 +70,10 @@ def activate_effect(effect_in_board_dto: EffectInBoardDto) -> ResponseDto:
     except OutOfBoundException as ex:
         return prepare_response(pedal_board=user_board.effect_board, success=False, message=str(ex))
 
+@router.get("/get-current-board-info")
+def get_board_info() -> ResponseDto:
+    return prepare_response(user_board.effect_board)
+
 @router.get("/get")
 async def get_effect_board(id: str) -> ResponseDto: # change return type to ResponseDBDto
     pass # get effect board from database
