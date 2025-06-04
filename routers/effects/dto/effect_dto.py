@@ -12,14 +12,13 @@ from routers.effects.dto.effect_type_enum import EffectType
 
 effect_dto_registry: Dict[Type['Effect'], Type['EffectDto']] = {}
 
-class EffectDto(BaseModel, ABC):
+class EffectDto(BaseModel):
     volume: int
     is_active: bool
     effect_type: EffectType
     delay_rate: int = 0
     frequency: int = 0
 
-    @abstractmethod
     def map(self, audio_in: AudioIn, audio_out: AudioOut) -> Effect:
         pass
 
