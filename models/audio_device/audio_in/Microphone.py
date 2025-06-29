@@ -26,3 +26,4 @@ class Microphone(AudioIn):
     def activate_device(self):
         with self.microphone.recorder(samplerate=self.rate) as mic:
             self.device = mic
+            return mic

@@ -5,23 +5,27 @@ from exception.NoPedalFoundException import NoPedalFound
 from exception.NoPositionFoundException import NoPositionFound
 from exception.OutOfBound import OutOfBoundException
 from models.effects.EffectBase import Effect
+from models.effects.NoneTypeEffect import NoneTypeEffect
+
 
 class EffectBoard(ABC):
+    id: str
+    user_id: str
     board_size: int # this size indicates how many effect pedals the board can carry
-    effects: list
+    effects: list[Effect]
     effect_channel_threads: list[Thread]
 
     def __init__(self, board_size: int) -> None:
         self.board_size = board_size
-        self.effects = [None] * board_size
+        self.effects = [NoneTypeEffect()] * board_size
         self.effect_channel_threads = [None] * board_size
 
     def add_effect(self, position: int, effect: Effect):
         if position >= self.board_size:
             raise OutOfBoundException(position)
 
-        if self.effects[position] is None:
-            self.effects.insert(position, effect)
+        if isinstance(self.effects[position], NoneTypeEffect):
+            self.effects[position] = effect
         else:
             raise NoPositionFound(position)
 
@@ -29,10 +33,21 @@ class EffectBoard(ABC):
         if position >= self.board_size:
             raise OutOfBoundException(position)
 
-        self.effects.insert(position, None)
+        self.effects[position] = NoneTypeEffect()
+
+    def get_effect(self, position: int) -> Effect:
+        if position >= self.board_size:
+            raise OutOfBoundException(position)
+
+        effect: Effect = self.effects[position]
+
+        if effect is None:
+            raise NoPedalFound(position)
+
+        return effect
 
     def clear_board(self):
-        self.effects = [None] * self.board_size
+        self.effects = [NoneTypeEffect()] * self.board_size
 
     def activate_pedal(self, position: int) -> None:
         if position >= self.board_size:
@@ -58,4 +73,5 @@ class EffectBoard(ABC):
         pedal_thread: Thread = self.effect_channel_threads[position]
 
         pedal.deactivate_effect()
-        pedal_thread.join()
+        if pedal_thread.is_alive():
+            pedal_thread.join(timeout=0.5)
