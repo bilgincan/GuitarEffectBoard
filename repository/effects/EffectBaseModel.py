@@ -3,6 +3,7 @@ from abc import ABC
 from bson import ObjectId
 from typing import Type, Dict
 
+from models.effects.NoneTypeEffect import NoneTypeEffect
 from repository.BaseModel import BaseModel
 from models.effects.Delay import Delay
 from models.effects.ByPass import ByPass
@@ -30,6 +31,17 @@ class EffectBaseModel(BaseModel, ABC):
             default_effect: ByPass = ByPass(volume=50, is_active=False, audio_in=None, audio_out=None)
             return ByPassModel.reverse_map(default_effect)
         return cls.reverse_map(base_object)
+
+@EffectBaseModel.register_effect(NoneTypeEffect)
+class NoneTypeEffectModel(EffectBaseModel):
+
+    @staticmethod
+    def reverse_map(base_object: 'Effect') -> 'EffectBaseModel':
+        return NoneTypeEffectModel()
+
+    def map(self):
+        pass
+
 
 @EffectBaseModel.register_effect(Delay)
 class DelayModel(EffectBaseModel):

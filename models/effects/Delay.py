@@ -16,10 +16,12 @@ class Delay(Effect):
     sampler: Thread
 
     def __init__(self, audio_in: AudioIn, audio_out: AudioOut, delay_rate: int=15, frequency: int=25, volume: int=50, is_active: bool=False):
-        super().__init__(audio_in=audio_in, audio_out=audio_out, volume=volume, is_active=is_active)
+        super().__init__(volume=volume, is_active=is_active)
         self.delay_rate = delay_rate
         self.frequency = frequency
         self.effect_channel_thread = Thread(target=self.effect_channel)
+        self.audio_in = audio_in
+        self.audio_out = audio_out
 
     def effect_channel(self) -> None:
         try:

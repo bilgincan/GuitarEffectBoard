@@ -6,6 +6,7 @@ from models.audio_device.audio_out.AudioOut import AudioOut
 from models.effects.ByPass import ByPass
 from models.effects.Delay import Delay
 from models.effects.EffectBase import Effect
+from models.effects.NoneTypeEffect import NoneTypeEffect
 from routers.effects.dto.effect_type_enum import EffectType
 
 effect_dto_registry: Dict[Type['Effect'], Type['EffectDto']] = {}
@@ -35,6 +36,7 @@ class EffectDto(BaseModel):
             return NonEffectDto.reverse_map(effect)
         return dto_cls.reverse_map(effect)
 
+@EffectDto.register_effect(NoneTypeEffect)
 class NonEffectDto(EffectDto):
 
     def map(self, audio_in: AudioIn, audio_out: AudioOut) -> Effect:
