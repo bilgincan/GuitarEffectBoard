@@ -15,6 +15,7 @@ class EffectBaseModel(BaseModel, ABC):
     board_id: ObjectId
     volume: int
     is_active: bool
+    effect_type: str
 
     @classmethod
     def register_effect(cls, effect_cls: Type['Effect']):
@@ -27,17 +28,17 @@ class EffectBaseModel(BaseModel, ABC):
     @staticmethod
     def reverse_map(base_object: 'Effect') -> 'EffectBaseModel':
         cls = effect_registry.get(type(base_object))
-        if cls is None:
-            default_effect: ByPass = ByPass(volume=50, is_active=False, audio_in=None, audio_out=None)
-            return ByPassModel.reverse_map(default_effect)
         return cls.reverse_map(base_object)
 
 @EffectBaseModel.register_effect(NoneTypeEffect)
 class NoneTypeEffectModel(EffectBaseModel):
+    effect_type: str = "NoneTypeEffect"
 
     @staticmethod
-    def reverse_map(base_object: 'Effect') -> 'EffectBaseModel':
-        return NoneTypeEffectModel()
+    def reverse_map(base_object: NoneTypeEffect) -> 'EffectBaseModel':
+        db_model_obj = NoneTypeEffectModel()
+        db_model_obj.effect_type = "NoneTypeEffect"
+        return db_model_obj
 
     def map(self):
         pass
@@ -45,12 +46,14 @@ class NoneTypeEffectModel(EffectBaseModel):
 
 @EffectBaseModel.register_effect(Delay)
 class DelayModel(EffectBaseModel):
+    effect_type: str = "Delay"
     delay_rate: int
     frequency: int
 
     @staticmethod
-    def reverse_map(delay: Effect) -> 'EffectBaseModel':
+    def reverse_map(delay: Delay) -> 'EffectBaseModel':
         db_model_obj = DelayModel()
+        db_model_obj.effect_type = "Delay"
 
         db_model_obj.volume = delay.volume
         db_model_obj.is_active = delay.is_active
@@ -64,9 +67,13 @@ class DelayModel(EffectBaseModel):
 
 @EffectBaseModel.register_effect(ByPass)
 class ByPassModel(EffectBaseModel):
+    effect_type: str = "ByPass"
+
     @staticmethod
-    def reverse_map(base_object: Effect) -> 'EffectBaseModel':
+    def reverse_map(base_object: ByPass) -> 'EffectBaseModel':
         db_model_obj = ByPassModel()
+
+        db_model_obj.effect_type = "ByPass"
         db_model_obj.volume = base_object.volume
         db_model_obj.is_active = base_object.is_active
 
