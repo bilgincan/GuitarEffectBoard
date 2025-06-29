@@ -1,11 +1,8 @@
-import threading
-from queue import Queue
 from threading import Thread
 
 from models.audio_device.audio_in.AudioIn import AudioIn
 from models.audio_device.audio_out.AudioOut import AudioOut
 from models.effects.EffectBase import Effect
-from models.sound.Sound import Sound
 
 
 class ByPass(Effect):

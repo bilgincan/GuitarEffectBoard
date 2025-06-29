@@ -8,6 +8,7 @@ from models.effects.EffectBase import Effect
 
 class EffectBoard(ABC):
     id: str
+    user_id: str
     board_size: int # this size indicates how many effect pedals the board can carry
     effects: list[Effect]
     effect_channel_threads: list[Thread]

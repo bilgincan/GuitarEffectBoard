@@ -15,3 +15,7 @@ class EffectInBoardDto(BaseModel):
     position: int
     effect: EffectDto
     board_id: str
+
+class EffectBoardUserDto(BaseModel):
+    id: str
+    user_id: str
